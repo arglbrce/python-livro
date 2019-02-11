@@ -16,4 +16,9 @@ def main(path):
 
 
 if __name__ == "__main__":
+    if (len(sys.argv) != 2):
+        print("""\
+USO: python3 extrai_zip.py dados.zip
+""")
+        sys.exit(-1)
     main(sys.argv[1])

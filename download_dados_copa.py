@@ -27,6 +27,12 @@ def download(response, output):
 
 
 def main():
+    if (len(sys.argv) != 2):
+        print("""\
+USO: python3 download_dados_copa.py http://livropython.com.br/dados.zip
+""")
+        sys.exit(-1)
+
     response = request.urlopen(sys.argv[1])
     out_file = io.FileIO('saida.zip', mode='w')
 
