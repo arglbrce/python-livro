@@ -8,6 +8,13 @@ class DataTable:
         self._columns = []
         self._data = []
 
+    def getData(self):
+        return self._data
+
+    @property
+    def name(self):
+        return self._name
+
 
 class Column:
     # construtor
