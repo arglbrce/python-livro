@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from decimal import Decimal
+
 
 class DataTable:
     """Representa uma Tabela de dados.
@@ -14,6 +16,7 @@ class DataTable:
            columns: [Lista de colunas]
            data: [Lista de dados]
     """
+
     def __init__(self, name):
         """Construtor
            Args:
@@ -24,6 +27,20 @@ class DataTable:
         self._references = []
         self._referenced = []
         self._data = []
+
+    def _get_name(self):
+        print("Getter executado!")
+        return self._name
+
+    def _set_name(self, _name):
+        print("Setter executado!")
+        self._name = _name
+
+    def _del_name(self):
+        print("Deletter executado!")
+        raise AttributeError('Não pode deletar esse atributo')
+
+    name = property(_get_name, _set_name, _del_name)
 
     def add_column(self, name, kind, description=""):
         column = Column(name, kind, description=description)
@@ -65,7 +82,7 @@ class Column:
         description: Descrição da coluna
     """
 
-    def __init__(self, name, kind, description):
+    def __init__(self, name, kind, description=""):
         """Construtor
 
            Args:
@@ -76,6 +93,31 @@ class Column:
         self._name = name
         self._kind = kind
         self._description = description
+        self._is_pk = False
+
+    def __str__(self):
+        _str = "Col: {} : {} {}".format(self._name,
+                                        self._kind,
+                                        self._description)
+        return _str
+
+    def _validate(kind, data):
+        if kind == 'bigint':
+            if isinstance(data, int):
+                return True
+            return False
+        elif kind == 'varchar':
+            if isinstance(data, str):
+                return True
+            return False
+        elif kind == 'numeric':
+            try:
+                val = Decimal(data)
+            except:
+                return False
+            return True
+
+    validate = staticmethod(_validate)
 
 
 class Relationship:
@@ -84,6 +126,7 @@ class Relationship:
        relacionamento entre tabelas. Em qual coluna ele existe,
        de onde vem e pra onde vai.
     """
+
     def __init__(self, name, _from, to, on):
         """Construtor
            Args:
@@ -96,3 +139,15 @@ class Relationship:
         self._from = _from
         self._to = to
         self._on = on
+
+
+class PrimaryKey(Column):
+    def __init__(self, table, name, kind, description=""):
+        super().__init__(name, kind, description=description)
+        self._is_pk = True
+
+    def __str__(self):
+        _str = "Col: {} : {} {}".format(self._name,
+                                        self._kind,
+                                        self._description)
+        return '{} - {}'.format('PK', _str)
